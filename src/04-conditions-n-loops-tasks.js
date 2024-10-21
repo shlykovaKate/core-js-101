@@ -27,8 +27,11 @@
  *  21 => 'Fizz'
  *
  */
-function getFizzBuzz(/* num */) {
-  throw new Error('Not implemented');
+function getFizzBuzz(num) {
+  let result = '';
+  if (num % 3 === 0) result += 'Fizz';
+  if (num % 5 === 0) result += 'Buzz';
+  return result || num;
 }
 
 
@@ -43,8 +46,12 @@ function getFizzBuzz(/* num */) {
  *   5  => 120
  *   10 => 3628800
  */
-function getFactorial(/* n */) {
-  throw new Error('Not implemented');
+function getFactorial(n) {
+  let factorial = 1;
+  for (let i = 1; i <= n; i += 1) {
+    factorial *= i;
+  }
+  return factorial;
 }
 
 
@@ -60,8 +67,12 @@ function getFactorial(/* n */) {
  *   5,10  =>  45 ( = 5+6+7+8+9+10 )
  *   -1,1  =>  0  ( = -1 + 0 + 1 )
  */
-function getSumBetweenNumbers(/* n1, n2 */) {
-  throw new Error('Not implemented');
+function getSumBetweenNumbers(n1, n2) {
+  let sum = 0;
+  for (let i = n1; i <= n2; i += 1) {
+    sum += i;
+  }
+  return sum;
 }
 
 
@@ -80,8 +91,8 @@ function getSumBetweenNumbers(/* n1, n2 */) {
  *   10,1,1   =>  false
  *   10,10,10 =>  true
  */
-function isTriangle(/* a, b, c */) {
-  throw new Error('Not implemented');
+function isTriangle(a, b, c) {
+  return a + b > c && b + c > a && c + a > b;
 }
 
 
@@ -314,8 +325,48 @@ function getDigitalRoot(num) {
  *   '{)' = false
  *   '{[(<{[]}>)]}' = true
  */
-function isBracketsBalanced(/* str */) {
-  throw new Error('Not implemented');
+function isBracketsBalanced(str) {
+  const brConfig = [['(', ')'], ['[', ']'], ['{', '}'], ['<', '>']];
+  const arrStrElements = str.split('');
+  const copyArrStrElements = str.split('');
+  let check = false;
+
+  if (arrStrElements.length) {
+    arrStrElements.reduce((prev) => {
+      let start = false;
+
+      if (prev && prev.length) {
+        for (let accI = 0; accI < prev.length; accI += 1) {
+          for (let brConfigI = 0; brConfigI < brConfig.length; brConfigI += 1) {
+            for (let bracketsI = 0; bracketsI < brConfig[brConfigI].length; bracketsI += 1) {
+              if (prev[accI] === brConfig[brConfigI][bracketsI]
+                && bracketsI === 1
+                && prev[accI - 1] === brConfig[brConfigI][0]) {
+                prev.splice(accI - 1, 2);
+
+                if (prev.length === 0) {
+                  check = true;
+                } else {
+                  start = true;
+                }
+                break;
+              }
+            }
+
+            if (start || check) break;
+          }
+
+          if (start || check) break;
+        }
+      }
+
+      return prev;
+    }, copyArrStrElements);
+  } else {
+    check = true;
+  }
+
+  return check;
 }
 
 
