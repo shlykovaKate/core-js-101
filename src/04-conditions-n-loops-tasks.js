@@ -128,8 +128,12 @@ function isTriangle(a, b, c) {
  *   { top:20, left:20, width: 20, height: 20 }    =>  false
  *
  */
-function doRectanglesOverlap(/* rect1, rect2 */) {
-  throw new Error('Not implemented');
+function doRectanglesOverlap(rect1, rect2) {
+  function ii(a1, a2, b1, b2) {
+    return a1 <= b2 && b1 <= a2;
+  }
+  return ii(rect1.left, rect1.left + rect1.width, rect2.left, rect2.left + rect2.width)
+         && ii(rect1.top, rect1.height + rect1.top, rect2.top, rect2.height + rect2.top);
 }
 
 
@@ -159,8 +163,8 @@ function doRectanglesOverlap(/* rect1, rect2 */) {
  *   { center: { x:0, y:0 }, radius:10 },  { x:10, y:10 }   => false
  *
  */
-function isInsideCircle(/* circle, point */) {
-  throw new Error('Not implemented');
+function isInsideCircle(circle, point) {
+  return (point.x - circle.center.x) ** 2 + (point.y - circle.center.y) ** 2 < circle.radius ** 2;
 }
 
 
@@ -272,8 +276,23 @@ function reverseInteger(num) {
  *   5436468789016589 => false
  *   4916123456789012 => false
  */
-function isCreditCardNumber(/* ccn */) {
-  throw new Error('Not implemented');
+function isCreditCardNumber(ccn) {
+  let sum = 0;
+  const ccnString = String(ccn);
+  const ccnLength = ccnString.length;
+  const parity = ccnLength % 2;
+
+  for (let i = 1; i <= ccnLength - 1; i += 1) {
+    if (i % 2 === parity) {
+      sum += Number(ccnString[i - 1]);
+    } else if (Number(ccnString[i - 1]) > 4) {
+      sum += 2 * Number(ccnString[i - 1]) - 9;
+    } else {
+      sum += 2 * Number(ccnString[i - 1]);
+    }
+  }
+
+  return Number(ccnString[ccnLength - 1]) === ((10 - (sum % 10)) % 10);
 }
 
 /**
@@ -463,8 +482,25 @@ function getCommonDirectoryPath(pathes) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
+function getMatrixProduct(m1, m2) {
+  const c = [];
+  c.length = m1.length;
+
+  for (let i = 0; i < m1.length; i += 1) {
+    c[i] = [];
+    c[i].length = m2[0].length;
+    c[i].fill(0);
+  }
+
+  for (let d = 0; d < m2[0].length; d += 1) {
+    for (let i = 0; i < m1.length; i += 1) {
+      for (let j = 0; j < m2.length; j += 1) {
+        c[d][i] += (m1[d][j] * m2[j][i]);
+      }
+    }
+  }
+
+  return c;
 }
 
 
@@ -498,8 +534,60 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  const ii = (i, j, value) => {
+    const set = new Set(value);
+    for (let a = 0; a < 3; a += 1) {
+      if (i && !j) {
+        set.add(position[i - 1][a]);
+      } else if (!i && j) {
+        set.add(position[a][j - 1]);
+      } else if (i === 0 && j === 0) {
+        set.add(position[a][a]);
+      } else {
+        set.add(position[a][2 - a]);
+      }
+    }
+    if (set.size === 1) return Array.from(set)[0];
+    return undefined;
+  };
+
+  const arr = ['X', '0'];
+  let winner;
+  for (let b = 0; b < arr.length; b += 1) {
+    for (let d = 1; d < 4; d += 1) {
+      const win = ii(d, 0, arr[b]);
+
+      if (win === 'X' || win === '0') {
+        winner = win;
+        break;
+      }
+    }
+    if (winner) { break; }
+
+    for (let d = 1; d < 4; d += 1) {
+      const win = ii(0, d, arr[b]);
+
+      if (win === 'X' || win === '0') {
+        winner = win;
+        break;
+      }
+    }
+    if (winner) { break; }
+
+    let win = ii(0, 0, arr[b]);
+    if (win === 'X' || win === '0') {
+      winner = win;
+    }
+    if (winner) { break; }
+
+    win = ii(5, 5, arr[b]);
+    if (win === 'X' || win === '0') {
+      winner = win;
+    }
+    if (winner) { break; }
+  }
+  return winner;
 }
 
 
